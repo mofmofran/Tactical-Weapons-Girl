@@ -16,7 +16,8 @@ public class PlayerMove : MonoBehaviour
 
     public float boostSpeed = 12.0f;//ブースト速度
     public float defaultBoostEndWait = 0.3f;//ブースト終了時の猶予
-    
+    public float stepSpeed = 10f;//ステップ初速
+    public float stepDuration = 0.3f;//ステップ減速時間
     public int hp = 750; //HP
 
     public float mainAmmo = 7.0f;//メイン射撃弾数
@@ -44,22 +45,25 @@ public class PlayerMove : MonoBehaviour
     //動作フラグ関連
     private bool _onGround = false; // 接地しているかどうかのフラグ
     private bool _recoveryTime = false; // 硬直中フラグ
-    [SerializeField] private float _boostWait =0.1f;//二回押しでブーストになる猶予時間
-    private float _boostEndWait;//ブースト移動終了の猶予
+    [SerializeField] private float _boostWait =0.2f;//二回押しでブーストになる猶予時間
+    [SerializeField] private float _stepWait =0.2f;//二回押しでステップになる猶予時間
+    private float _boostEndWait=-0.1f;//ブースト移動終了の猶予
     InputAction _jumpAction;//ジャンプボタン用変数
     InputAction _moveAction;//移動ボタン用変数
     private bool _isJump = false;//ジャンプ開始フラグ
     private bool _jumpHeld =false;//ジャンプが押されているか
     private bool _moveHeld =false;//移動ボタンが押されているか
-
     private bool _isBoost = false;//ブースト初動
     private bool _isBoosting = false;//ブースト中か
+    public bool isStep = false;//ステップ初動
+    public float _stepTimer;//ステップ時間
     private bool _isSteping = false;//ステップ中か
     private bool _isGroundRecovery = false;//接地系か
     private float _angleX = 1f;//左右移動角度
     private float _angleY = 0f;//上下移動角度
     private Vector2 _moveVec;//移動ベクトル
     private int _jumpCnt=0;//ジャンプボタン入力数のカウント
+    private int _moveCnt=0;//移動ボタン入力数のカウント
 
 
     public void Recovery()//硬直中フラグを解除するメソッド
@@ -362,6 +366,7 @@ public class PlayerMove : MonoBehaviour
         {
             Debug.Log("接地＆硬直無し");
             boostGauge = 1000;//ブーストゲージを回復する
+            _boostEndWait = -0.1f;
         }
 
 
